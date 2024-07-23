@@ -20,36 +20,29 @@ const run = async () => {
     const images = await Image.findAll({
       where: { active: false },
     });
-    // if (images.length > 0) {
-    //   for (const img of images) {
-    //     const checkQuestion = await Question.findOne({
-    //       where: {
-    //         question: {
-    //           [Op.like]: `%${img.filename}%`,
-    //         },
-    //       },
-    //     });
-    //     const checkAnswer = await Answer.findOne({
-    //       where: {
-    //         answer: {
-    //           [Op.like]: `%${img.filename}%`,
-    //         },
-    //       },
-    //     });
-    //     if (checkQuestion || checkAnswer) {
-    //       await Image.update({ active: true }, { where: { id: img.id } });
-    //     }
-    //   }
-    //   const images2 = await Image.findAll({
-    //     where: { active: false },
-    //   });
-    //   for (const img of images2) {
-    //     const dir = `./static/uploads/upload/`;
-    //     const file = path.join(dir, `${img.filename}`);
-    //     fs.unlinkSync(file);
-    //   }
-    //   await Image.destroy({ where: { active: false } });
-    // }
+    if (images.length > 0) {
+      for (const img of images) {
+        const checkBlog = await Blog.findOne({
+          where: {
+            content: {
+              [Op.like]: `%${img.filename}%`,
+            },
+          },
+        });
+        if (checkBlog) {
+          await Image.update({ active: true }, { where: { id: img.id } });
+        }
+      }
+      const imageNotActives = await Image.findAll({
+        where: { active: false },
+      });
+      for (const img of imageNotActives) {
+        const dir = `./static/uploads/upload/`;
+        const file = path.join(dir, `${img.filename}`);
+        fs.unlinkSync(file);
+      }
+      await Image.destroy({ where: { active: false } });
+    }
   } catch (error) {
     console.log(error);
   }

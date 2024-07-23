@@ -30,18 +30,9 @@ const onUpload = (req, res, next) => {
     }
     next();
   });
-};
-const checkRole = (req, res, next) => {
-  if (['admin', 'specialist'].includes(req.user.role)) {
-    next();
-  } else {
-    return res.status(403).json({
-      message: 'Forbidden.',
-    });
-  }
-};
+}
 
-router.post('/upload-img/', passport.authenticate('bearer', { session: false }), checkRole, onUpload, async (req, res, next) => {
+router.post('/upload-img/', passport.authenticate('bearer-member', { session: false }), onUpload, async (req, res, next) => {
   if (req.file) {
     const { filename } = req.file;
     const newFilename = filename.replace(/\.[^/.]+$/, '');
