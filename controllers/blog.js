@@ -51,7 +51,26 @@ module.exports = {
     const { limit, offset } = db.getPagination(page, size);
     try {
       const lists = await Blog.findAndCountAll({
-        include: [Img, Member],
+        include: [Img, {
+          model: Member,
+          attributes: {
+            exclude: [
+              "password",
+              "salt",
+              "password_reset_expire_at",
+              "password_reset_token",
+              "active",
+              "facebook_id",
+              "google_id",
+              "refresh_token",
+              "refresh_token_expire_at",
+              "createdAt",
+              "updatedAt",
+              "verify_at",
+              "verify_token",
+            ],
+          },
+        }],
         where,
         limit,
         offset,
@@ -95,7 +114,26 @@ module.exports = {
   show: async (req, res, next) => {
     const slug = req.params.slug;
     try {
-      const data = await model.findBySlug(Blog, slug, res, [Img, Member]);
+      const data = await model.findBySlug(Blog, slug, res, [Img, {
+        model: Member,
+        attributes: {
+          exclude: [
+            "password",
+            "salt",
+            "password_reset_expire_at",
+            "password_reset_token",
+            "active",
+            "facebook_id",
+            "google_id",
+            "refresh_token",
+            "refresh_token_expire_at",
+            "createdAt",
+            "updatedAt",
+            "verify_at",
+            "verify_token",
+          ],
+        },
+      }]);
       await db.sequelize.transaction(async (t) => {
         return await Blog.update(
           {
