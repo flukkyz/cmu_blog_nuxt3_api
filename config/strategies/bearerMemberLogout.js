@@ -20,8 +20,6 @@ module.exports = new BearerStrategy(async (token, done) => {
             "password_reset_expire_at",
             "password_reset_token",
             "active",
-            "facebook_id",
-            "google_id",
             "refresh_token",
             "refresh_token_expire_at",
             "createdAt",
